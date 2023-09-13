@@ -1,0 +1,155 @@
+const keys = [
+    //1ra fila de nuestro teclado
+    [
+        ["1", "!"],//Son dos valores por posición por si se presiona el shift
+        ["2", "@"],
+        ["3", "#"],
+        ["4", "$"],
+        ["5", "%"],
+        ["6", "&"],
+        ["7", "/"],
+        ["8", "("],
+        ["9", ")"],
+        ["0", "="],
+        ["'", "?"],
+        ["¿", "¡"],
+    ],
+    //2da fila
+    [
+        ["q", "Q"],
+        ["w", "W"],
+        ["e", "E"],
+        ["r", "R"],
+        ["t", "T"],
+        ["y", "Y"],
+        ["u", "U"],
+        ["i", "I"],
+        ["o", "O"],
+        ["p", "P"],
+        ["´", "¨"],
+        ["+", "*"]
+    ],
+    //3ra fila
+    [
+        ["MAYUS", "MAYUS"],
+        ["a", "A"],
+        ["s", "S"],
+        ["d", "D"],
+        ["f", "F"],
+        ["g", "G"],
+        ["h", "H"],
+        ["j", "J"],
+        ["k", "K"],
+        ["l", "L"],
+        ["ñ", "Ñ"],
+        ["{", "["],
+        ["}", "]"]
+    ],
+    //4ta fila
+    [
+        ["SHIFT", "SHIFT"],
+        ["<", ">"],
+        ["z", "Z"],
+        ["x", "X"],
+        ["c", "C"],
+        ["v", "V"],
+        ["b", "B"],
+        ["n", "N"],
+        ["m", "M"],
+        [",", ";"],
+        [".", ":"],
+        ["-", "_"]
+        
+    ],
+    //5ta fila
+    [
+        ["SPACE", "SPACE"]
+    ]
+];
+
+let mayus= false;
+let shift= false;
+let current=null;
+const input= document.querySelector('#input');
+
+input.addEventListener("focusin", e=>{
+    current=e.target(); 
+})
+
+renderKeyboard();
+
+function renderKeyboard(){
+    const keyboardContainer=document.querySelector('#keyboard-container');
+    let empty='<div class="key-empty"></div>'; //Para el espacio vacio que se presenta en algunos renglones
+
+    //El primer map es para las filas y el segundo es para cualquiera de los dos elementos
+    const layers = keys.map((layer)=>{
+        return layer.map(key => {
+             if(key[0]=="SHIFT"){
+                return `<button class="key key-shift">${key[0]}</button>`;
+             }
+             if(key[0]=="MAYUS"){
+                return `<button class="key key-mayus">${key[0]}</button>`;
+             }
+             if(key[0]=="SPACE"){
+                return `<button class="key key-space">${key[0]}</button>`;
+             }      
+             
+             //Si es cualquier otra tecla tenemos que ver si "shift" está activado
+             //En caso de que no nos metemos a un segundo condicional terniario para ver si MAYUS está activado
+             //Mayus solo afecta a las letras
+             return `
+                <button class="key key-normal">
+                
+                ${
+                    shift? 
+                        key[1] 
+                        : mayus && key[0].toLowerCase().charCodeAt(0) >= 97 && key[0] <= 122 ?
+                            key[1] 
+                            : key[0] 
+                }
+                </button>
+             `;
+        });
+    });
+
+    //Agregamos los espacios vacios de neustro teclado virtual
+    layers[0].push(empty);
+    layers[1].unshift(empty);
+    
+    const htmlLayers = layers.map(layer => {
+        return layer.join("");
+    });
+
+    keyboardContainer.innerHTML="";
+    htmlLayers.forEach(layer=>{
+        keyboardContainer.innerHTML+= `<div class="layer">${layer}</div>`;
+    });
+}
+
+//funcionalidad de los botones
+document.querySelectorAll('key', e=>{
+    if(current){
+        if(key.textContent == "SHIFT" ){
+            shift=!shift;
+            
+        }else if(key.textContent=="MAYUS"){
+            mayus=!false;
+            
+        }else if(key.textContent=="SPACE"){
+            current.value+=" ";
+        }else{
+            current.value += key.textContent;
+            if(shift){
+                shift=false;
+                
+            }
+        }
+
+        renderKeyboard();
+        current.focus();
+    }   
+});
+
+
+
