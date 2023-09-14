@@ -13,6 +13,7 @@ const keys = [
         ["0", "="],
         ["'", "?"],
         ["¿", "¡"],
+        ["BORRAR", "BORRAR"]
     ],
     //2da fila
     [
@@ -143,6 +144,8 @@ function Animate(){
                 renderKeyboard();
             }else if(tecla=="SPACE"){
                 input.value+=" ";
+            }else if(tecla=="BORRAR"){
+                input.value=input.value.substring(0, input.value.length - 1);
             }else{
                 input.value += tecla;
                 if(shift){
