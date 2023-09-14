@@ -72,13 +72,11 @@ let shift= false;
 let current=null;
 const input= document.querySelector('#input');
 
-input.addEventListener("focusin", e=>{
-    current=e.target(); 
-})
-
 renderKeyboard();
 
 function renderKeyboard(){
+
+    console.log("Entramoss a rendetizar");
     const keyboardContainer=document.querySelector('#keyboard-container');
     let empty='<div class="key-empty"></div>'; //Para el espacio vacio que se presenta en algunos renglones
 
@@ -98,13 +96,14 @@ function renderKeyboard(){
              //Si es cualquier otra tecla tenemos que ver si "shift" está activado
              //En caso de que no nos metemos a un segundo condicional terniario para ver si MAYUS está activado
              //Mayus solo afecta a las letras
+             
              return `
                 <button class="key key-normal">
                 
                 ${
                     shift? 
                         key[1] 
-                        : mayus && key[0].toLowerCase().charCodeAt(0) >= 97 && key[0] <= 122 ?
+                        : (mayus && key[0].toLowerCase().charCodeAt(0) >= 97 && key[0].toLowerCase().charCodeAt(0) <= 122) ?
                             key[1] 
                             : key[0] 
                 }
@@ -125,31 +124,39 @@ function renderKeyboard(){
     htmlLayers.forEach(layer=>{
         keyboardContainer.innerHTML+= `<div class="layer">${layer}</div>`;
     });
+
+    Animate();
 }
 
 //funcionalidad de los botones
-document.querySelectorAll('key', e=>{
-    if(current){
-        if(key.textContent == "SHIFT" ){
-            shift=!shift;
-            
-        }else if(key.textContent=="MAYUS"){
-            mayus=!false;
-            
-        }else if(key.textContent=="SPACE"){
-            current.value+=" ";
-        }else{
-            current.value += key.textContent;
-            if(shift){
-                shift=false;
-                
+function Animate(){
+    document.querySelectorAll('.key').forEach(boton=>{
+        boton.addEventListener('click', e=>{
+            let tecla=boton.textContent.trim();
+            console.log(tecla);    
+            if(tecla == "SHIFT" ){
+                shift=!shift;
+                renderKeyboard();
+            }else if (tecla=="MAYUS"){
+                mayus=!false;
+                console.log(mayus);
+                renderKeyboard();
+            }else if(tecla=="SPACE"){
+                input.value+=" ";
+            }else{
+                input.value += tecla;
+                if(shift){
+                    shift=false;
+                    renderKeyboard();    
+                }
             }
-        }
+            
+        });
+    });        
+}        
+            
+        
 
-        renderKeyboard();
-        current.focus();
-    }   
-});
 
 
 
